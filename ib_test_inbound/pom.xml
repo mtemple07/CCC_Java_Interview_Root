@@ -1,0 +1,113 @@
+<!--
+
+    Copyright (C) 2019 CCCIS Casualty (admin@aisreview.com)
+
+    The software code contained herein is the property of CCCIS
+    and its subsidiaries and affiliates (collectively, “CCCIS”).
+
+    Use of this software code and any applications and information therein
+    constitutes acknowledgement of and consent to this notice
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.cccis.casualty.data.ib_test</groupId>
+    <artifactId>ib_test_root</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+  <artifactId>ib_test_inbound</artifactId>
+  <packaging>ibdata</packaging>
+  <name>${project.artifactId}</name>
+  <description>Data Archive for ingesting ${project.artifactId}</description>
+  <!-- URL for site gen -->
+  <properties>
+    <ccc.exceptions.version>1-SNAPSHOT</ccc.exceptions.version>
+  </properties>
+  <url>${github.url.base}/${project.artifactId}</url>
+  <scm>
+    <connection>scm:git:${git.url}</connection>
+    <url>scm:git:${git.url}</url>
+    <developerConnection>scm:git:${git.url}</developerConnection>
+    <tag>HEAD</tag>
+  </scm>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.infrastructurebuilder.data</groupId>
+        <artifactId>ibdata-bom</artifactId>
+        <version>${ib.data.bom.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  <dependencies>
+    <dependency>
+      <groupId>junit</groupId>
+      <artifactId>junit</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency> <!-- FIXME: Maybe we don't need exceptions in ingestion? -->
+      <groupId>com.cccis.casualty</groupId>
+      <artifactId>cccexceptions</artifactId>
+      <version>${ccc.exceptions.version}</version>
+    </dependency>
+    <dependency> <!--  SLF4J Logging for testing.  Should be ccclogconfig, but that doesn't exist yet -->
+      <groupId>org.infrastructurebuilder.util</groupId>
+      <artifactId>iblogconfig</artifactId>
+      <classifier>test</classifier>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.infrastructurebuilder.data</groupId>
+        <artifactId>ibdata-maven-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>default-ingest</id>
+            <goals>
+              <goal>ingest</goal>
+            </goals>
+            <configuration>
+              <ingest>
+                <id>xyz</id>
+                <ingester>default</ingester>
+                <dataSet>
+                  <name>${project.name}.txt</name>
+                  <description>Stream: ${project.description}</description>
+                  <metadata>
+                    <some>data set metadata</some>
+                  </metadata>
+                  <streams>
+                    <stream>
+                      <temporaryId>inbound1</temporaryId>
+                      <name>IB_Test_Pipe.txt</name>
+                      <description>Desc for ib_test</description>
+                      <mimeType>text/pipe-separated-values</mimeType>
+                      <!-- Dumb file is currently INSIDE the project like the pioneers did it -->
+                      <url>file:///${basedir}/src/main/ibdata/IB_Test_Pipe.txt</url>
+                      <sha512>625e9e500e8df16601e08d5acf4a98342e0e0e24022573477ac19a898a44cd2a2a146e27446ed4324a5dac982f3edbbcc277588d6810efa03559942f62ca9db7</sha512>
+<!--
+                      <sha512>182527d0a0c984571ddb3a0b73ca3733a29cb55b1e9f41eed140665079aae3f8ed428667a6dede52dad666bf57d4236f415664c9ce2bceda7725c67ab78e76c0</sha512>
+-->
+                      <metadata>
+                      <!-- Some fake metadata -->
+                        <buildDate>${maven.build.timestamp}</buildDate>
+                      </metadata>
+                    </stream>
+                  </streams>
+                </dataSet>
+              </ingest>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+    </plugins>
+  </build>
+</project>

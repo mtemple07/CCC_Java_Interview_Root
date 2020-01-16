@@ -1,0 +1,43 @@
+#
+# Copyright (C) 2019 CCCIS Casualty (admin@aisreview.com)
+#
+# The software code contained herein is the property of CCCIS
+# and its subsidiaries and affiliates (collectively, “CCCIS”).
+#
+# Use of this software code and any applications and information therein
+# constitutes acknowledgement of and consent to this notice
+#
+
+variables: 
+  - group: AVRO_SOLUTION_CREDENTIALS
+  - group: CASUALTY_DATA_RELEASE_REPOSITORY
+  #- template: version_template.yml
+
+# trigger:
+  # branches:
+    # include:
+    # - master
+
+jobs:
+- job: build
+  pool:
+    vmImage: 'vs2017-win2016'
+  timeoutInMinutes: 20
+  cancelTimeoutInMinutes: 20
+  strategy:
+    maxParallel: 1
+    
+  steps:
+  - task: PowerShell@2
+    displayName: 'Create manifest reader installation directory'
+    inputs:
+      targetType: 'inline'
+      script: mvn -U clean install
+      failOnStderr: true    
+
+  - task: PowerShell@2
+    displayName: 'Create manifest reader installation directory'
+    inputs:
+      targetType: 'inline'
+      script: dir $(System.DefaultWorkingDirectory)
+      failOnStderr: true    

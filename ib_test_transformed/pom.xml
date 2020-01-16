@@ -1,0 +1,201 @@
+<!--
+
+    Copyright (C) 2019 CCCIS Casualty (admin@aisreview.com)
+
+    The software code contained herein is the property of CCCIS
+    and its subsidiaries and affiliates (collectively, “CCCIS”).
+
+    Use of this software code and any applications and information therein
+    constitutes acknowledgement of and consent to this notice
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <parent>
+    <groupId>com.cccis.casualty.data.ib_test</groupId>
+    <artifactId>ib_test_root</artifactId>
+    <version>0.0.1-SNAPSHOT</version>
+  </parent>
+  <modelVersion>4.0.0</modelVersion>
+  <artifactId>ib_test_transformed</artifactId>
+  <packaging>ibdata</packaging>
+  <name>${project.artifactId}</name>
+  <description>The transformed Avro</description>
+  <properties>
+    <jacoco.skip>true</jacoco.skip>
+    <schema.location>${project.build.directory}/schema</schema.location>
+    <schema>${schema.location}/ib_test_schema_transformed/ib_test_schema.avsc</schema>
+  </properties>
+  <dependencies>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>ib_test_schema</artifactId>
+      <version>${project.version}</version>
+      <scope>provided</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.infrastructurebuilder.data</groupId>
+      <artifactId>ibdata-testing</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.infrastructurebuilder.data</groupId>
+      <artifactId>ibdata-avro-types</artifactId>
+      <version>${ib.data.version}</version>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>org.junit.jupiter</groupId>
+      <artifactId>junit-jupiter</artifactId>
+      <scope>test</scope>
+    </dependency>
+    <dependency>
+      <groupId>${project.groupId}</groupId>
+      <artifactId>ib_test_inbound</artifactId>
+      <version>${project.version}</version>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <plugins>
+      <plugin>
+        <groupId>org.apache.maven.plugins</groupId>
+        <artifactId>maven-dependency-plugin</artifactId>
+        <executions>
+          <execution>
+            <id>unpackit</id>
+            <phase>validate</phase>
+            <goals>
+              <goal>unpack</goal>
+            </goals>
+            <inherited>false</inherited>
+            <configuration>
+              <artifactItems>
+                <artifactItem>
+                  <groupId>com.cccis.casualty.data.ib_test</groupId>
+                  <artifactId>ib_test_schema</artifactId>
+                  <version>${project.version}</version>
+                </artifactItem>
+              </artifactItems>
+              <includes>**/*.avsc</includes>
+              <outputDirectory>${schema.location}</outputDirectory>
+              <overWriteReleases>false</overWriteReleases>
+              <overWriteSnapshots>true</overWriteSnapshots>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+      <plugin>
+        <groupId>org.infrastructurebuilder.data</groupId>
+        <artifactId>ibdata-maven-plugin</artifactId>
+        <extensions>true</extensions>
+        <configuration>
+          <injectDependencies>true</injectDependencies>
+        </configuration>
+        <dependencies>
+          <!--
+           -->
+          <dependency>
+            <groupId>org.infrastructurebuilder.data</groupId>
+            <artifactId>ibdata-avro-types</artifactId>
+            <version>${ib.data.version}</version>
+          </dependency>
+        </dependencies>
+        <executions>
+		  <execution>
+            <id>transformed</id>
+            <configuration>
+              <transformations>
+			    <transformation>
+                  <id>transform-test</id>
+                  <!-- FIXME Shouldn't these should be defaulted to the local project ? -->
+                  <name>ib_test_transformed.avro</name>
+                  <transformers>
+                    <recordTransformer>
+                      <id>record-based</id>
+                      <configuration>
+                        <schema>${schema.location}/ib_test_schema_transformed/ib_test_schema.avsc</schema>
+                      </configuration>
+                      <sources>
+                        <!-- ALL -->
+                      </sources>
+                      <failOnAnyError>true</failOnAnyError>
+                      <records>
+                        <record>
+                          <id>tab-test</id>
+                        </record>
+                      </records>
+                    </recordTransformer>
+                  </transformers>
+                </transformation>
+              </transformations>
+            </configuration>
+          </execution>
+          <execution>
+            <id>default-transformation-transformed</id>
+            <goals>
+              <goal>transform</goal>
+            </goals>
+            <configuration>
+              <transformations>
+                <transformation>
+                  <id>ib_test-id-transformed</id>
+                  <!-- FIXME Shouldn't these should be defaulted to the local project ? -->
+                  <name>ib_test_transformed.avro</name>
+                  <finalizer>default-transform</finalizer>
+                  <finalizerConfig>
+                    <someKey>someValue</someKey>
+                    <schema>${schema.location}/ib_test_schema_transformed/ib_test_schema.avsc</schema>
+                  </finalizerConfig>
+                  <transformers>
+                    <recordTransformer>
+                      <id>record-based</id>
+                      <recordFinalizer>avro-generic</recordFinalizer>
+                      <configuration>
+                        <schema>${schema.location}/ib_test_schema_transformed/ib_test_schema.avsc</schema>
+                      </configuration>
+                      <sources>
+                        <!-- ALL -->
+                      </sources>
+                      <failOnAnyError>true</failOnAnyError>
+                      <records>
+                        <record>
+                          <id>regex-array-split</id>
+                          <config>
+                            <regex>|</regex>
+                          </config>
+                        </record>
+                        <record>
+                          <id>abc</id>
+                          <hint>array-to-name-map</hint>
+                          <fields>
+                            <field>Field_1</field>
+                            <field>Field_2</field>
+                            <field>Field_3</field>
+                          </fields>
+                        </record>
+                        <record>
+                          <id>get-thee-into-thy-generic-record</id>
+                          <hint>map-to-generic-avro</hint>
+                          <config>
+                            <schema>${schema.location}/ib_test_schema_transformed/ib_test_schema.avsc</schema>
+                          </config>
+                        </record>
+                      </records>
+                    </recordTransformer>
+                  </transformers>
+                </transformation>
+              </transformations>
+            </configuration>
+          </execution>
+        </executions>
+      </plugin>
+
+      <plugin>
+        <groupId>org.infrastructurebuilder.maven</groupId>
+        <artifactId>ibversions-maven-plugin</artifactId>
+      </plugin>
+    </plugins>
+  </build>
+</project>

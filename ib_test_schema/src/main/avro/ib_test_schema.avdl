@@ -1,0 +1,11 @@
+@namespace("$[project.groupId]")
+
+
+protocol $[targetName]Protocol {
+  record $[targetName] {
+    @order("ignore")
+    string Field_1;
+    string Field_2;
+    string Field_3;
+  }
+}

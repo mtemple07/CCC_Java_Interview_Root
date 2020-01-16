@@ -1,0 +1,87 @@
+<!--
+
+    Copyright (C) 2019 CCCIS Casualty (admin@aisreview.com)
+
+    The software code contained herein is the property of CCCIS
+    and its subsidiaries and affiliates (collectively, “CCCIS”).
+
+    Use of this software code and any applications and information therein
+    constitutes acknowledgement of and consent to this notice
+
+-->
+<project xmlns="http://maven.apache.org/POM/4.0.0"
+  xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+  xsi:schemaLocation="http://maven.apache.org/POM/4.0.0 http://maven.apache.org/xsd/maven-4.0.0.xsd">
+  <modelVersion>4.0.0</modelVersion>
+  <parent>
+    <groupId>com.cccis.casualty</groupId>
+    <artifactId>cccparent</artifactId>
+    <version>1-SNAPSHOT</version>
+  </parent>
+  <groupId>com.cccis.casualty.data.ib_test</groupId>
+  <artifactId>ib_test_root</artifactId>
+  <version>0.0.1-SNAPSHOT</version>
+  <packaging>pom</packaging>
+  <name>${project.artifactId}</name>
+  <description>Components for ib_test</description>
+  <!-- URL for site gen -->
+  <properties>
+    <test.coverage.percentage.required>99</test.coverage.percentage.required> <!--100 actually -->
+
+    <!--  FIXME Move version in newer parent release -->
+    <ib.versioning.support.plugin.version>0.12.0</ib.versioning.support.plugin.version>
+
+    <ccc.exceptions.version>1-SNAPSHOT</ccc.exceptions.version>
+  </properties>
+  <!-- URL for site gen -->
+  <url>${github.url.base}/${project.artifactId}</url>
+  <scm>
+    <connection>scm:git:${git.url}</connection>
+    <url>scm:git:${git.url}</url>
+    <developerConnection>scm:git:${git.url}</developerConnection>
+    <tag>HEAD</tag>
+  </scm>
+  <dependencyManagement>
+    <dependencies>
+      <dependency>
+        <groupId>org.infrastructurebuilder.data</groupId>
+        <artifactId>ibdata-bom</artifactId>
+        <version>${ib.data.bom.version}</version>
+        <type>pom</type>
+        <scope>import</scope>
+      </dependency>
+    </dependencies>
+  </dependencyManagement>
+  <dependencies>
+    <dependency> <!-- FIXME: Maybe we don't need exceptions in ingestion? -->
+      <groupId>com.cccis.casualty</groupId>
+      <artifactId>cccexceptions</artifactId>
+      <version>${ccc.exceptions.version}</version>
+    </dependency>
+    <dependency> <!--  SLF4J Logging for testing.  Should be ccclogconfig, but that doesn't exist yet -->
+      <groupId>org.infrastructurebuilder.util</groupId>
+      <artifactId>iblogconfig</artifactId>
+      <classifier>test</classifier>
+      <scope>test</scope>
+    </dependency>
+  </dependencies>
+
+  <build>
+    <pluginManagement>
+      <plugins>
+        <plugin>
+          <groupId>org.infrastructurebuilder.data</groupId>
+          <artifactId>ibdata-maven-plugin</artifactId>
+          <version>${ib.data.version}</version>
+          <extensions>true</extensions>
+        </plugin>
+      </plugins>
+    </pluginManagement>
+  </build>
+  <modules>
+    <module>ib_test_inbound</module>
+    <module>ib_test_schema</module>
+    <module>ib_test_component</module>
+    <module>ib_test_transformed</module>
+  </modules>
+</project>

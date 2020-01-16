@@ -1,0 +1,4 @@
+# Git Attributes to ensure that line endings match on various OS representations
+src/main/ibdata/**/*	text eol=lf
+src/test/ibdata/**/*	text eol=lf
+
