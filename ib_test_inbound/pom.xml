@@ -2,12 +2,6 @@
 
     Copyright (C) 2019 CCCIS Casualty (admin@aisreview.com)
 
-    The software code contained herein is the property of CCCIS
-    and its subsidiaries and affiliates (collectively, “CCCIS”).
-
-    Use of this software code and any applications and information therein
-    constitutes acknowledgement of and consent to this notice
-
 -->
 <project xmlns="http://maven.apache.org/POM/4.0.0"
   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
@@ -93,9 +87,6 @@
                       <!-- Dumb file is currently INSIDE the project like the pioneers did it -->
                       <url>file:///${basedir}/src/main/ibdata/IB_Test_Pipe.txt</url>
                       <sha512>625e9e500e8df16601e08d5acf4a98342e0e0e24022573477ac19a898a44cd2a2a146e27446ed4324a5dac982f3edbbcc277588d6810efa03559942f62ca9db7</sha512>
-<!--
-                      <sha512>182527d0a0c984571ddb3a0b73ca3733a29cb55b1e9f41eed140665079aae3f8ed428667a6dede52dad666bf57d4236f415664c9ce2bceda7725c67ab78e76c0</sha512>
--->
                       <metadata>
                       <!-- Some fake metadata -->
                         <buildDate>${maven.build.timestamp}</buildDate>
